@@ -1,0 +1,16 @@
+# intermediate render artifacts (regenerated from sources)
+_backdrop.png
+_frame_*.png
+_silent.mp4
+_mixed.m4a
+ambient.wav
+
+# build scripts (kept local, not part of site)
+_build_mp4.sh
+_make_ambient.py
+_make_frames.py
+
+# system
+.DS_Store
+.claude/
+node_modules/
