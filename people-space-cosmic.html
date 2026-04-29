@@ -1462,8 +1462,8 @@ function fadeAmbientTo(target, ms){
 
 /* Background music sits low under the voice. When the final VO ends,
    it fades out completely so the show closes in silence. */
-const MUSIC_BASE = 0.10;     // base level between voices
-const MUSIC_DUCK = 0.05;     // even lower while a voice is speaking
+const MUSIC_BASE = 0.28;     // base level between voices
+const MUSIC_DUCK = 0.14;     // ducked while a voice is speaking
 function setVoiceDuckingFor(idx){
   audios.forEach((a,i)=>{
     a.onplay = a.onpause = a.onended = null;
