@@ -735,6 +735,8 @@
   }
 
   /* === Keyword: bold sans-serif in brand green === */
+  /* Note: font-size has no !important so the JS auto-fit (fitKeywords)
+     can shrink long phrases like "THERE IS STRUCTURE" to fit the viewport. */
   .keyword{
     font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
     font-style:normal !important;
@@ -742,11 +744,17 @@
     letter-spacing:-.015em !important;
     color:var(--brand-green) !important;
     text-transform:none !important;
-    font-size:clamp(48px, 7vw, 140px) !important;
     max-width:88vw !important;
+    text-align:center !important;
     text-shadow:
       0 0 28px rgba(126,217,87,.45),
       0 0 70px rgba(126,217,87,.25) !important;
+  }
+  /* The original .scene.active .reveal rule wins specificity-wise and
+     kills the translate(-50%) centering. Force it back with !important. */
+  .keyword.center,
+  .scene.active .keyword.center{
+    transform:translate(-50%, -50%) !important;
   }
   .keyword .ksplit > span{
     color:var(--brand-green) !important;
@@ -1131,6 +1139,8 @@
   });
 
   // Auto-fit every keyword. Iteratively reduces font-size until both width & height fit.
+  // Exposed globally so rebuildKeyword (s1 SPACE→VAST swap) can re-fit after rebuilding.
+  window.fitKeywords = fitKeywords;
   function fitKeywords(){
     const targetW = innerWidth * 0.78;
     const targetH = innerHeight * 0.42;
@@ -1481,7 +1491,7 @@ function rebuildKeyword(el, text){
   }
   wrap.appendChild(inner);
   el.appendChild(wrap);
-  if(typeof fitKeywords === 'function') fitKeywords();
+  if(typeof window.fitKeywords === 'function') window.fitKeywords();
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
     inner.querySelectorAll('span').forEach(s=>{
       s.style.opacity=''; s.style.transform=''; s.style.filter='';
@@ -1509,8 +1519,8 @@ function armS1Swap(){
 
 /* Background music sits low under the voice. When the final VO ends,
    it fades out completely so the show closes in silence. */
-const MUSIC_BASE = 0.18;     // base level between voices
-const MUSIC_DUCK = 0.08;     // ducked while a voice is speaking
+const MUSIC_BASE = 0.10;     // base level between voices
+const MUSIC_DUCK = 0.04;     // ducked while a voice is speaking
 function setVoiceDuckingFor(idx){
   audios.forEach((a,i)=>{
     a.onplay = a.onpause = a.onended = null;
