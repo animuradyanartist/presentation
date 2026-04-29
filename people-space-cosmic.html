@@ -668,9 +668,202 @@
     box-shadow:0 0 30px rgba(251,191,36,.4);
     transform:scale(1.02);
   }
+
+  /* ============================================================
+     v2 restyle — photographic backgrounds + People Space brand
+     Sans-serif typography, brand-green accents, looped imagery.
+     ============================================================ */
+  :root{
+    --brand-green:#7ED957;
+    --brand-green-glow:rgba(126,217,87,.55);
+  }
+
+  /* Per-scene photographic background layer */
+  .scene-bg{
+    position:absolute; inset:0; z-index:0; overflow:hidden;
+    background-size:cover; background-position:center; background-repeat:no-repeat;
+  }
+  /* Video sits above the photo poster but below the dark vignette */
+  .scene-video{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    pointer-events:none;
+  }
+  .scene-bg::after{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse at center, transparent 25%, rgba(0,0,0,.55) 100%),
+      linear-gradient(180deg, rgba(0,0,0,.30) 0%, transparent 22%, transparent 78%, rgba(0,0,0,.45) 100%);
+  }
+  /* 4 images, looped across 8 chapters */
+  #s1 .scene-bg{background-image:url("bg-1.jpg")}
+  #s2 .scene-bg{background-image:url("bg-2.jpg")}
+  #s3 .scene-bg{background-image:url("bg-3.jpg")}
+  #s4 .scene-bg{background-image:url("bg-4.jpg")}
+  #s5 .scene-bg{background-image:url("bg-1.jpg")}
+  #s6 .scene-bg{background-image:url("bg-2.jpg")}
+  #s7 .scene-bg{background-image:url("bg-3.jpg")}
+  #s8 .scene-bg{background-image:url("bg-4.jpg")}
+
+  /* Replace the synthetic milky-way with the photos. Keep stars/dust for sparkle. */
+  .bg-fixed .deep-space, .bg-fixed .nebula{display:none}
+  .bg-fixed canvas#stars{opacity:.55}
+  .bg-fixed canvas#shooting{opacity:.7}
+
+  /* Tone down the per-scene colored auras so the photos read cleanly */
+  .scene::before, .scene::after{opacity:0 !important}
+
+  /* Tame CSS animations so they accent the photo, not compete with it */
+  #s1 .vast-core{opacity:.18 !important}
+  #s2 .chaos .body{opacity:.4 !important}
+  #s3 .orbit-ring{opacity:.3 !important}
+  #s3 .core-star{opacity:.5 !important}
+  #s4 #netSvg{opacity:.4 !important}
+  #s4 .node{opacity:.55 !important}
+  #s6 .formation .ring{opacity:.45 !important}
+  #s6 .core-sphere{opacity:.7 !important}
+  #s7 .beams{opacity:.55 !important}
+  #s7 .center-orb{opacity:.7 !important}
+
+  /* On the 3 video scenes (s1, s5, s8), the video is the hero —
+     hide the in-scene CSS animations entirely so they don't compete */
+  #s1 .vast-core,
+  #s5 .burst-core, #s5 .burst-remnant, #s5 .shockwave,
+  #s8 .logo-orbit::before, #s8 .logo-orbit::after, #s8 .logo-glow{
+    display:none !important;
+  }
+
+  /* === Keyword: bold sans-serif in brand green === */
+  .keyword{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    font-style:normal !important;
+    font-weight:800 !important;
+    letter-spacing:-.015em !important;
+    color:var(--brand-green) !important;
+    text-transform:none !important;
+    font-size:clamp(48px, 7vw, 140px) !important;
+    max-width:88vw !important;
+    text-shadow:
+      0 0 28px rgba(126,217,87,.45),
+      0 0 70px rgba(126,217,87,.25) !important;
+  }
+  .keyword .ksplit > span{
+    color:var(--brand-green) !important;
+    text-shadow:inherit !important;
+  }
+  .ksplit-wrap::after{
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent) !important;
+  }
+
+  /* === Top-left brand mark on every scene === */
+  .brand-mark{
+    position:fixed; top:24px; left:32px; z-index:95;
+    display:flex; align-items:center; gap:12px;
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif;
+    pointer-events:none;
+  }
+  .brand-mark svg{width:42px;height:42px;display:block;
+    filter:drop-shadow(0 0 14px rgba(126,217,87,.55));
+  }
+  .brand-mark .label{display:flex;flex-direction:column;line-height:1.15}
+  .brand-mark .label .top{
+    color:#fff; font-weight:600; font-size:14px; letter-spacing:.005em;
+  }
+  .brand-mark .label .sub{
+    color:rgba(255,255,255,.55); font-weight:400; font-size:12px; letter-spacing:.005em;
+  }
+
+  /* === Hero (s8): bold green sans-serif "People Space" === */
+  #s8 .brand{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    font-weight:800 !important; font-style:normal !important;
+    font-size:clamp(56px,7.6vw,128px) !important;
+    letter-spacing:-.015em !important; text-transform:none !important;
+    color:var(--brand-green) !important;
+    text-shadow:0 0 28px rgba(126,217,87,.45), 0 0 70px rgba(126,217,87,.25) !important;
+  }
+  #s8 .brand em{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    font-style:normal !important; font-weight:800 !important;
+    background:none !important;
+    -webkit-background-clip:initial !important; background-clip:initial !important;
+    -webkit-text-fill-color:var(--brand-green) !important;
+    color:var(--brand-green) !important;
+    letter-spacing:-.015em !important;
+  }
+  #s8 .tag{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    letter-spacing:.32em !important; font-weight:400 !important;
+    color:rgba(255,255,255,.7) !important; text-shadow:none !important;
+  }
+  #s8 .cta{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    font-style:normal !important; font-weight:500 !important;
+    letter-spacing:.04em !important; color:#fff !important;
+  }
+  #s8 .cta::after{background:linear-gradient(90deg,#fff,transparent) !important}
+  #s8 .brand-divider{background:linear-gradient(90deg,transparent,var(--brand-green),transparent) !important}
+
+  /* === HUDs in the same sans-serif === */
+  /* Hide the chapter indicator — the brand mark owns the top-left now */
+  .section-indicator{display:none !important}
+  .scroll-hint, .audio-toggle{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    letter-spacing:.32em !important;
+  }
+  .scroll-hint .arrow{background:linear-gradient(180deg,var(--brand-green),transparent) !important}
+  .progress-rail .dot.active{background:var(--brand-green) !important;border-color:var(--brand-green) !important;box-shadow:0 0 14px var(--brand-green-glow) !important}
+  .audio-toggle.on{color:var(--brand-green) !important;border-color:var(--brand-green) !important;box-shadow:0 0 18px var(--brand-green-glow) !important}
+
+  /* === Enable-sound modal restyle === */
+  #enableSound h1{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    font-weight:800 !important; font-style:normal !important;
+    text-transform:none !important; letter-spacing:-.015em !important;
+    color:var(--brand-green) !important;
+    text-shadow:0 0 28px rgba(126,217,87,.45) !important;
+  }
+  #enableSound h1 em{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    font-style:normal !important; font-weight:800 !important;
+    background:none !important; -webkit-background-clip:initial !important;
+    -webkit-text-fill-color:var(--brand-green) !important; color:var(--brand-green) !important;
+  }
+  #enableSound p{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    letter-spacing:.3em !important;
+  }
+  #enableSound .div{background:linear-gradient(90deg,transparent,var(--brand-green),transparent) !important}
+  #enableSound .start-btn{
+    font-family:'Inter','Space Grotesk',system-ui,sans-serif !important;
+    font-style:normal !important; font-weight:500 !important;
+    letter-spacing:.04em !important;
+    border-color:var(--brand-green) !important; color:var(--brand-green) !important;
+    background:linear-gradient(90deg,rgba(126,217,87,.14),rgba(126,217,87,.04)) !important;
+  }
+  #enableSound .start-btn:hover{
+    background:linear-gradient(90deg,rgba(126,217,87,.28),rgba(126,217,87,.12)) !important;
+    box-shadow:0 0 30px rgba(126,217,87,.4) !important;
+  }
 </style>
 </head>
 <body>
+
+<!-- Persistent brand mark — top-left on every scene -->
+<div class="brand-mark" aria-label="People Space — HR management">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="50" cy="55" r="22" fill="#7ED957"/>
+    <g transform="rotate(-22 50 55)">
+      <ellipse cx="50" cy="55" rx="38" ry="11" fill="none" stroke="#ffffff" stroke-width="3"/>
+    </g>
+    <circle cx="80" cy="22" r="3.5" fill="#ffffff"/>
+  </svg>
+  <div class="label">
+    <span class="top">People Space</span>
+    <span class="sub">Hr management</span>
+  </div>
+</div>
 
 <!-- Fixed cosmic backdrop, shared across all scenes -->
 <div class="bg-fixed">
@@ -695,6 +888,9 @@
 
   <!-- ===== Section 1: VAST ===== -->
   <section class="scene" id="s1" data-vo="1">
+    <div class="scene-bg has-video">
+      <video class="scene-video" src="video-1.mp4" autoplay loop muted playsinline preload="auto" poster="bg-1.jpg"></video>
+    </div>
     <div class="scene-inner">
       <div id="s1-core" class="vast-core"></div>
     </div>
@@ -703,6 +899,7 @@
 
   <!-- ===== Section 2: CHAOS ===== -->
   <section class="scene" id="s2" data-vo="2">
+    <div class="scene-bg"></div>
     <div class="scene-inner">
       <div class="chaos" id="chaos-container"></div>
     </div>
@@ -711,6 +908,7 @@
 
   <!-- ===== Section 3: STRUCTURE / ORBIT ===== -->
   <section class="scene" id="s3" data-vo="3">
+    <div class="scene-bg"></div>
     <div class="scene-inner">
       <div class="orbit-system">
         <div class="core-star"></div>
@@ -729,6 +927,7 @@
 
   <!-- ===== Section 4: ECOSYSTEM ===== -->
   <section class="scene" id="s4" data-vo="4">
+    <div class="scene-bg"></div>
     <div class="scene-inner">
       <svg id="netSvg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
         <defs>
@@ -747,6 +946,9 @@
 
   <!-- ===== Section 5: BURST ===== -->
   <section class="scene" id="s5" data-vo="5">
+    <div class="scene-bg has-video">
+      <video class="scene-video" src="video-5.mp4" autoplay loop muted playsinline preload="auto" poster="bg-1.jpg"></video>
+    </div>
     <div class="scene-inner">
       <div class="burst-core"></div>
       <div class="shockwave s1"></div>
@@ -759,6 +961,7 @@
 
   <!-- ===== Section 6: PEOPLE SPACE forming ===== -->
   <section class="scene" id="s6" data-vo="6">
+    <div class="scene-bg"></div>
     <div class="scene-inner">
       <div class="formation">
         <div class="core-sphere"></div>
@@ -772,6 +975,7 @@
 
   <!-- ===== Section 7: 4 CLUSTERS — beams, sequenced reveal ===== -->
   <section class="scene" id="s7" data-vo="7">
+    <div class="scene-bg"></div>
     <div class="scene-inner">
       <svg class="beams" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
         <defs>
@@ -802,6 +1006,9 @@
 
   <!-- ===== Section 8: Hero / Final ===== -->
   <section class="scene" id="s8" data-vo="8">
+    <div class="scene-bg has-video">
+      <video class="scene-video" src="video-8.mp4" autoplay loop muted playsinline preload="auto" poster="bg-4.jpg"></video>
+    </div>
     <div class="scene-inner">
       <div class="hero-wrap">
         <div class="logo-orbit reveal delay-1">
@@ -849,8 +1056,8 @@
 <audio id="vo6" preload="auto" src="6.mp3"></audio>
 <audio id="vo7" preload="auto" src="7.mp3"></audio>
 <audio id="vo8" preload="auto" src="8.mp3"></audio>
-<!-- Ambient cosmic pad -->
-<audio id="ambient" preload="auto" loop src="ambient.mp3"></audio>
+<!-- Background music — plays alongside the voice-overs and stops when they end -->
+<audio id="ambient" preload="auto" loop src="music.mp3"></audio>
 
 <!-- HUD overlays -->
 <div class="hud section-indicator">Chapter <span id="sectionNum">I</span> &nbsp;·&nbsp; of VIII</div>
@@ -1253,19 +1460,28 @@ function fadeAmbientTo(target, ms){
   step();
 }
 
-/* duck ambient while voice plays so the voice stays clear */
+/* Background music sits low under the voice. When the final VO ends,
+   it fades out completely so the show closes in silence. */
+const MUSIC_BASE = 0.10;     // base level between voices
+const MUSIC_DUCK = 0.05;     // even lower while a voice is speaking
 function setVoiceDuckingFor(idx){
   audios.forEach((a,i)=>{
     a.onplay = a.onpause = a.onended = null;
   });
   const a = audios[idx];
   if(!a) return;
-  a.addEventListener('play', ()=>fadeAmbientTo(0.12, 350), {once:true});
-  a.addEventListener('pause', ()=>fadeAmbientTo(0.32, 600), {once:true});
+  a.addEventListener('play', ()=>fadeAmbientTo(MUSIC_DUCK, 350), {once:true});
+  a.addEventListener('pause', ()=>fadeAmbientTo(MUSIC_BASE, 600), {once:true});
   a.addEventListener('ended', ()=>{
-    fadeAmbientTo(0.32, 600);
+    const isLast = idx === audios.length - 1;
+    if(isLast){
+      // Voice is done for the whole show — stop the music too.
+      fadeAmbientTo(0, 1400);
+      setTimeout(()=>{ try{ ambient.pause(); }catch(e){} }, 1500);
+    } else {
+      fadeAmbientTo(MUSIC_BASE, 600);
+    }
     if(autoPlay && started){
-      // advance to next chapter automatically
       const next = Math.min(scenes.length-1, idx+1);
       if(next !== idx) scenes[next].scrollIntoView({behavior:'smooth'});
     }
@@ -1382,7 +1598,7 @@ function startExperience(){
     audios[0].play().catch(()=>{});
     // start ambient at low volume; fade up
     try{ambient.currentTime = 0; ambient.play().catch(()=>{});}catch(e){}
-    fadeAmbientTo(0.32, 2000);
+    fadeAmbientTo(MUSIC_BASE, 2000);
   }
   currentIdx = 0;
   sectionNum.textContent = ROMAN[0];
