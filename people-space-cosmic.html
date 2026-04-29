@@ -894,7 +894,7 @@
     <div class="scene-inner">
       <div id="s1-core" class="vast-core"></div>
     </div>
-    <div class="keyword center reveal delay-3">VAST</div>
+    <div class="keyword center reveal delay-3" id="s1-keyword" data-initial="SPACE" data-after="VAST">SPACE</div>
   </section>
 
   <!-- ===== Section 2: CHAOS ===== -->
@@ -903,7 +903,7 @@
     <div class="scene-inner">
       <div class="chaos" id="chaos-container"></div>
     </div>
-    <div class="keyword center reveal delay-2">CHAOS</div>
+    <div class="keyword center reveal delay-2">SEEMS CHAOS</div>
   </section>
 
   <!-- ===== Section 3: STRUCTURE / ORBIT ===== -->
@@ -922,7 +922,7 @@
         <div class="orbit-body b4"><div class="planet" style="left:52.5%;top:0;background:radial-gradient(circle,#fff,var(--cyan));box-shadow:0 0 18px var(--cyan)"></div></div>
       </div>
     </div>
-    <div class="keyword center reveal delay-2">ORBIT</div>
+    <div class="keyword center reveal delay-2">THERE IS STRUCTURE</div>
   </section>
 
   <!-- ===== Section 4: ECOSYSTEM ===== -->
@@ -1459,10 +1459,58 @@ function fadeAmbientTo(target, ms){
   step();
 }
 
+/* === Section 1 keyword swap: starts as SPACE, becomes VAST when the
+   voice says "vast". Adjust S1_SWAP_AT (seconds into 1.mp3) to taste. === */
+const S1_SWAP_AT = 5.5;
+function rebuildKeyword(el, text){
+  el.textContent = '';
+  const wrap = document.createElement('span');
+  wrap.className = 'ksplit-wrap';
+  const inner = document.createElement('span');
+  inner.className = 'ksplit';
+  let i = 0;
+  for(const ch of text){
+    const s = document.createElement('span');
+    s.textContent = ch === ' ' ? ' ' : ch;
+    s.style.transitionDelay = (0.04 + i*0.05) + 's';
+    s.style.opacity = '0';
+    s.style.transform = 'translateY(20px) scale(.98)';
+    s.style.filter = 'blur(10px)';
+    inner.appendChild(s);
+    i++;
+  }
+  wrap.appendChild(inner);
+  el.appendChild(wrap);
+  if(typeof fitKeywords === 'function') fitKeywords();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    inner.querySelectorAll('span').forEach(s=>{
+      s.style.opacity=''; s.style.transform=''; s.style.filter='';
+    });
+  }));
+}
+let s1SwapTimerArmed = false;
+function armS1Swap(){
+  const v = document.getElementById('vo1');
+  const el = document.getElementById('s1-keyword');
+  if(!v || !el || s1SwapTimerArmed) return;
+  s1SwapTimerArmed = true;
+  const onTime = ()=>{
+    if(v.currentTime >= S1_SWAP_AT){
+      v.removeEventListener('timeupdate', onTime);
+      rebuildKeyword(el, el.dataset.after || 'VAST');
+    }
+  };
+  v.addEventListener('timeupdate', onTime);
+  v.addEventListener('ended', ()=>{
+    v.removeEventListener('timeupdate', onTime);
+    s1SwapTimerArmed = false;
+  }, {once:true});
+}
+
 /* Background music sits low under the voice. When the final VO ends,
    it fades out completely so the show closes in silence. */
-const MUSIC_BASE = 0.28;     // base level between voices
-const MUSIC_DUCK = 0.14;     // ducked while a voice is speaking
+const MUSIC_BASE = 0.18;     // base level between voices
+const MUSIC_DUCK = 0.08;     // ducked while a voice is speaking
 function setVoiceDuckingFor(idx){
   audios.forEach((a,i)=>{
     a.onplay = a.onpause = a.onended = null;
@@ -1549,6 +1597,13 @@ function activate(idx){
     if(a){
       setVoiceDuckingFor(idx);
       a.currentTime = 0;
+      // S1: reset keyword to SPACE and re-arm the swap-to-VAST timer
+      if(idx === 0){
+        const k = document.getElementById('s1-keyword');
+        if(k) rebuildKeyword(k, k.dataset.initial || 'SPACE');
+        s1SwapTimerArmed = false;
+        armS1Swap();
+      }
       a.play().catch(()=>{});
     }
   }
@@ -1594,6 +1649,7 @@ function startExperience(){
   if(audioOn){
     audios[0].currentTime = 0;
     setVoiceDuckingFor(0);
+    armS1Swap();
     audios[0].play().catch(()=>{});
     // start ambient at low volume; fade up
     try{ambient.currentTime = 0; ambient.play().catch(()=>{});}catch(e){}
